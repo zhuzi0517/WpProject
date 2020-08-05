@@ -4,6 +4,7 @@
 package com.jeesite.modules.wp.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.jeesite.modules.wp.entity.WpTaskSub;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,14 @@ public class WpTaskService extends CrudService<WpTaskDao, WpTask> {
 		super.save(wpTask);
 		// 保存上传附件
 		FileUploadUtils.saveFileUpload(wpTask.getId(), "wpTask_file");
+		//先删除子表中当前任务ID的所有信息，再添加进子表
+		dao.delWpTaskSub(wpTask.getWpTaskId());
+		WpTaskSub wpTaskSub = new WpTaskSub();
+		wpTaskSub.setWpTaskSubId(UUID.randomUUID().toString());
+		wpTaskSub.setWpTaskId(wpTask.getWpTaskId());
+		wpTaskSub.setWpTeamId(wpTask.getTeamName());
+		wpTaskSub.setRemarks(wpTask.getRemarks());
+		dao.addWpTaskSub(wpTaskSub);
 	}
 	
 	/**

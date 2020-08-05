@@ -18,4 +18,6 @@ import java.util.List;
 @MyBatisDao
 public interface WpTaskDao extends CrudDao<WpTask> {
 	List<WpTaskSub> getTeamList();
+	void addWpTaskSub(WpTaskSub wpTaskSub);
+	void delWpTaskSub(String wpTaskId);
 }

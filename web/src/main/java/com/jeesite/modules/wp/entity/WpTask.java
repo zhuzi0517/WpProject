@@ -52,8 +52,16 @@ public class WpTask extends DataEntity<WpTask> {
 	private String taskIndate;		// 任务有效期
 	private String taskAddress;		// 任务地址
 	private String taskDescription;		// 任务描述
-
+	private String teamName;
 	private List<WpTaskSub> wpTaskSubList;
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
 
 	public List<WpTaskSub> getWpTaskSubList() {
 		return wpTaskSubList;

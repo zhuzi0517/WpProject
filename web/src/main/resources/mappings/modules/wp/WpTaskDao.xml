@@ -15,4 +15,86 @@
 	<select id="getTeamList" resultType="com.jeesite.modules.wp.entity.WpTaskSub">
 		SELECT WP_TEAM_ID,TEAM_NAME,TEAM_NO FROM wp_team
 	</select>
+	<!--根据任务id删除团队任务表信息-->
+	<delete id="delWpTaskSub" parameterType="java.lang.String">
+		delete from wp_task_sub where WP_TASK_ID = #{wpTaskId}
+	</delete>
+	<!--添加到团队任务子表-->
+	<insert id="addWpTaskSub" parameterType="com.jeesite.modules.wp.entity.WpTaskSub">
+		insert into wp_task_sub
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="wpTaskSubId != null">
+				WP_TASK_SUB_ID,
+			</if>
+			<if test="wpTaskId != null">
+				WP_TASK_ID,
+			</if>
+			<if test="wpTeamId != null">
+				WP_TEAM_ID,
+			</if>
+			<if test="remarks != null">
+				REMARKS,
+			</if>
+			<if test="createBy != null">
+				CREATE_BY,
+			</if>
+			<if test="createDate != null">
+				CREATE_DATE,
+			</if>
+			<if test="updateBy != null">
+				UPDATE_BY,
+			</if>
+			<if test="updateDate != null">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="wpTaskSubId != null">
+				#{wpTaskSubId,jdbcType=VARCHAR},
+			</if>
+			<if test="wpTaskId != null">
+				#{wpTaskId,jdbcType=VARCHAR},
+			</if>
+			<if test="wpTeamId != null">
+				#{wpTeamId,jdbcType=VARCHAR},
+			</if>
+			<if test="remarks != null">
+				#{remarks,jdbcType=VARCHAR},
+			</if>
+			<if test="createBy != null">
+				#{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate},
+			</if>
+			<if test="updateBy != null">
+				#{updateBy,jdbcType=VARCHAR},
+			</if>
+			<if test="updateDate != null">
+				#{updateDate},
+			</if>
+		</trim>
+	</insert>
+	<!--修改团队任务子表-->
+	<update id="updateWpTaskSub" parameterType="com.jeesite.modules.wp.entity.WpTask">
+		update wp_task_sub
+		<set>
+			<if test="wpTaskId != null">
+				WP_TASK_ID = #{wpTaskId,jdbcType=VARCHAR},
+			</if>
+			<if test="wpTeamId != null">
+				WP_TEAM_ID = #{wpTeamId,jdbcType=VARCHAR},
+			</if>
+			<if test="remarks != null">
+				REMARKS = #{remarks,jdbcType=VARCHAR},
+			</if>
+			<if test="updateBy != null">
+				UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+			</if>
+			<if test="updateDate != null">
+				UPDATE_DATE = #{updateDate},
+			</if>
+		</set>
+		where WP_TASK_SUB_ID = #{wpTaskSubId,jdbcType=VARCHAR}
+	</update>
 </mapper>

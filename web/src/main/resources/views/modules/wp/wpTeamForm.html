@@ -1,0 +1,336 @@
+<% layout('/layouts/default.html', {title: '任务团队管理管理', libs: ['validate','dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header with-border">
+			<div class="box-title">
+				<i class="fa icon-note"></i> ${text(wpTeam.isNewRecord ? '新增任务团队管理' : '编辑任务团队管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+			</div>
+		</div>
+		<#form:form id="inputForm" model="${wpTeam}" action="${ctx}/wp/wpTeam/save" method="post" class="form-horizontal">
+			<div class="box-body">
+				<div class="form-unit">${text('基本信息')}</div>
+				<#form:hidden id="wpTeamId" path="wpTeamId"/>
+				<#form:hidden id="dataJson" path="dataJson"/>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('团队名称')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="teamName" maxlength="64" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('团队编号')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="teamNo" maxlength="64" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('所属区域名称')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="areaName" maxlength="64" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('所属区域')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+<!--								<#form:select path="areaCode" dictType="" blankOption="true" class="form-control" />-->
+								<#form:treeselect id="area" title="${text('区域选择')}"
+								path="area.areaCode" labelName="area.areaName" labelValue="${company.area.treeNames!}"
+								url="${ctx}/sys/area/treeData" returnFullName="true"
+								class=" " allowClear="true"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('团队有效期开始时间')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="beginTime" readonly="true" maxlength="20" class="form-control laydate"
+									dataFormat="datetime" data-type="datetime" data-format="yyyy-MM-dd HH:mm"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('团队有效期结束时间')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="endTime" readonly="true" maxlength="20" class="form-control laydate"
+									dataFormat="datetime" data-type="datetime" data-format="yyyy-MM-dd HH:mm"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('团队标签')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="teamLabel" maxlength="64" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('状态')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<% var items = [{label:'启用',value:'1'},{label:'禁用',value:'0'}]; %>
+								<#form:select path="teamStatus" items="${items}" itemLabel="label" itemValue="value" blankOption="true" maxlength="1" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('成员数量')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="memberNumber" maxlength="11" class="form-control digits"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2" title="">
+								<span class="required hide">*</span> ${text('备注')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-10">
+								<#form:textarea path="remarks" rows="4" maxlength="255" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<div class="form-unit">${text('选择团队成员')}</div>
+			<div class="box box-main">
+				<!--<div class="box-header">
+					<div class="box-title">
+						<i class="fa icon-notebook"></i> ${text('待选成员')}
+					</div>
+				</div>-->
+				<div class="box-body">
+					<!--<#form:form id="searchForm" model="${wpTeam}" action="${ctx}/wp/wpTeam/listData" method="post"
+					class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}"
+					data-order-by="${parameter.orderBy}">-->
+					<div class="form-group">
+						<label class="control-label">${text('团队名称')}：</label>
+						<div class="control-inline">
+<!--							<#form:input path="teamName" maxlength="64" class="form-control width-120"/>-->
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="button" class="btn btn-primary btn-sm">${text('查询')}</button>
+						<button type="button" onclick="randomUser()" class="btn btn-primary btn-sm">${text('随机')}</button>
+					</div>
+<!--				</#form:form>-->
+				<div style="float: left">
+					<div class="box-header">
+						<div class="box-title">
+							<i class="fa icon-notebook"></i> ${text('待选人员')}
+						</div>
+					</div>
+					<table id="userGrid"></table>
+					</table>
+					<div id="dataGridPage"></div>
+				</div>
+					<input type="button"  id="right" value=">" />
+					<input type="button"  id="left" value="<" />
+				<div style="float: right">
+					<div class="box-header">
+						<div class="box-title">
+							<i class="fa icon-notebook"></i> ${text('已选人员')}
+						</div>
+					</div>
+					<table id="unSelectGrid" ></table>
+				</div>
+			</div>
+
+		</div>
+		<!--########################################################################################-->
+		<!--<div class="pl10 pb20">
+			<table id="userGrid"></table>
+&lt;!&ndash;			<#form:hidden name="userRoleString"/>&ndash;&gt;
+		</div>-->
+		<div class="box-footer">
+				<div class="row">
+					<div class="col-sm-offset-2 col-sm-10">
+						<% if (hasPermi('wp:wpTeam:edit')){ %>
+							<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('保 存')}</button>&nbsp;
+						<% } %>
+						<button type="button" class="btn btn-sm btn-default" id="btnCancel" onclick="js.closeCurrentTabPage()"><i class="fa fa-reply-all"></i> ${text('关 闭')}</button>
+					</div>
+				</div>
+			</div>
+		</#form:form>
+	</div>
+</div>
+<% } %>
+<script>
+
+// 加载成员列表
+$("#userGrid").dataGrid({
+	url: '${ctx}/wp/wpTeam/getUnselectList',
+	// pager: "#dataGridPage",
+	page:1,
+	rowNum: 10,
+	columnModel: [
+		{header:'${text("姓名")}', name:'acName', sortable:false, width:10, align:"center"},
+		{header:'${text("用户ID")}', name:'userCode', sortable:false, width:10, align:"center",hidden:true},
+		{header:'${text("年龄")}', name:'age',  width:10, align:"center"},
+		{header:'${text("所属机构")}', name:'areaCode',  width:10, align:"center"}
+	],
+	showCheckbox: true,
+	loadonce: true,
+	autoGridHeight: function(){
+		return 'auto';
+	},
+	autoGridWidth: function(){
+		return $('#inputForm .box-body').width()-650;
+	},
+	ajaxSuccess: function(data){
+	}
+});
+$("#unSelectGrid").dataGrid({
+	// url: '${ctx}/wp/wpTeam/listData',
+	url: '${ctx}/wp/wpTeam/getUserList?userFlag='+'1',
+	// searchForm: $("#searchForm"),
+	postData: {"wpTeamId":$("#wpTeamId").val()},
+	// pager: "#dataGridPage",
+	// rowNum: 10,
+	columnModel: [
+		{header:'${text("姓名")}', name:'acName', sortable:false, width:10, align:"center"},
+		{header:'${text("用户ID")}', name:'userCode', sortable:false, width:10, align:"center",hidden:true},
+		{header:'${text("年龄")}', name:'age',  width:10, align:"center"},
+		{header:'${text("所属机构")}', name:'areaCode',  width:10, align:"center"}
+	],
+	showCheckbox: true,
+	loadonce: true,
+	autoGridHeight: function(){
+		return 'auto';
+	},
+	autoGridWidth: function(){
+		return $('#inputForm .box-body').width()-650;
+	},
+	ajaxSuccess: function(data){
+		/*	<% for (role in roleList!){ %>
+                    userGrid.dataGrid('setSelectRow', '${role.roleCode}');
+                <% } %>*/
+	}
+});
+	//随机待选人员数
+	function randomUser() {
+		$('#userGrid').jqGrid('clearGridData');
+		$("#userGrid").jqGrid('setGridParam',{
+			url: "${ctx}/wp/wpTeam/getUnselectList?randNum=1",
+			datatype:'json'
+		}).trigger("reloadGrid");
+	}
+	//将左边数据移动到右边
+	$("#right").click(function () {
+		//获取左边所有的数据
+		var data = $("#unSelectGrid").jqGrid("getRowData");
+		//获取右边选中的表格数据
+		var ids = $("#userGrid").jqGrid('getGridParam', 'selarrrow');
+		var str = new Array();
+		for (var i =0;i<ids.length;i++){
+			var rowData = $("#userGrid").jqGrid('getRowData', ids[i]);
+			str.push(rowData);
+		}
+		var exist = isExist(str,data);
+		//添加行数据到表格最底部
+		$("#unSelectGrid").jqGrid("addRowData", 1, exist,"last");
+		//左边表格移出选中的数据
+		for (var j =0;j<ids.length;){
+			$("#userGrid").jqGrid("delRowData",ids[0]);
+		}
+		//右边表格渲染
+	/*	$("#unSelectGrid").jqGrid('setGridParam',{
+			data: str,
+		}).trigger("reloadGrid");*/
+
+	});
+	//将右边数据移动到左边
+	$("#left").click(function () {
+		//获取左边所有的数据
+		var data = $("#userGrid").jqGrid("getRowData");
+		//获取右边选中的数据
+		var ids = $("#unSelectGrid").jqGrid('getGridParam', 'selarrrow');
+		var str = new Array();
+		for (var i =0;i<ids.length;i++){
+			var rowData = $("#unSelectGrid").jqGrid('getRowData', ids[i]);
+			str.push(rowData);
+		}
+		var exist = isExist(str,data);
+		for (var j =0;j<ids.length;){
+			$("#unSelectGrid").jqGrid("delRowData",ids[0]);
+		}
+		//右边表格渲染
+		$("#userGrid").jqGrid("addRowData", 1, exist,"last");
+
+		/*$("#userGrid").jqGrid('setGridParam',{
+			data: str,
+		}).trigger("reloadGrid");*/
+	});
+	//判断选中的数据是否已经存在表格里面，若存在就不删除
+	function isExist(str,data) {
+		if (data){
+			for (var i =0;i<str.length;i++){
+				var userCode = str[i].userCode;
+				for (var j = 0;j<data.length;j++){
+					var code = data[j].userCode;
+					if (userCode == code){
+						str.splice(i, 1);
+					}
+				}
+			}
+			return str;
+		}else {
+			return str;
+		}
+
+	}
+	//点击保存获取最右边最后的数据
+	function getUserCode() {
+		//获取最右边的表格所有的数据
+		var Griddata = $("#unSelectGrid").jqGrid("getRowData");
+		var dataJson = "";
+		if (Griddata){
+			for (var i = 0; i<Griddata.length;i++){
+				var userCode = Griddata[i].userCode;
+				dataJson +=userCode+",";
+			}
+		}
+		$("#dataJson").val(dataJson);
+		console.log($("#dataJson").val());
+	}
+$("#inputForm").validate({
+	submitHandler: function(form){
+		getUserCode();
+		js.ajaxSubmitForm($(form), function(data){
+			js.showMessage(data.message);
+			if(data.result == Global.TRUE){
+				js.closeCurrentTabPage(function(contentWindow){
+					contentWindow.page();
+				});
+			}
+		}, "json");
+	}
+});
+</script>

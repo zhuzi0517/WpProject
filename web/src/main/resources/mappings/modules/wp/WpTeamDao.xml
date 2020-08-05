@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.wp.dao.WpTeamDao">
+	
+	<!-- 查询数据
+	<select id="findList" resultType="WpTeam">
+		SELECT ${sqlMap.column.toSql()}
+		FROM ${sqlMap.table.toSql()}
+		<where>
+			${sqlMap.where.toSql()}
+		</where>
+		ORDER BY ${sqlMap.order.toSql()}
+	</select> -->
+	<!--待选人员列表信息-->
+	<select id="getUnselectList" resultType="com.jeesite.modules.wp.entity.WpTeamUser" parameterType="com.jeesite.modules.wp.entity.WpTeamUser">
+			SELECT
+			t2.USER_CODE,
+			t2.AC_NAME,
+			t2.AGE,
+			t2.AREA_CODE
+			FROM
+			js_sys_user t1
+			RIGHT JOIN wp_userinfo_nc t2 ON t1.user_code = t2.USER_CODE
+			<where>
+				<if test="randNum!=null and randNum!=''">
+					ORDER BY RAND()
+					LIMIT #{randNum,jdbcType=BIGINT}
+				</if>
+			</where>
+	</select>
+	<!--查询用户列表信息-->
+	<select id="getUserList" resultType="com.jeesite.modules.wp.entity.WpTeamUser" parameterType="com.jeesite.modules.wp.entity.WpTeamUser">
+		SELECT
+			t2.USER_CODE,
+			t2.AC_NAME,
+			t2.AGE,
+			t2.AREA_CODE
+		FROM
+			js_sys_user t1
+		RIGHT JOIN wp_userinfo_nc t2 ON t1.user_code = t2.USER_CODE
+		left join WP_TEAM_MEMBERS t3 on t1.USER_CODE = t3.USER_CODE
+		<where>
+				 t3.WP_TEAM_ID = #{wpTeamId}
+		</where>
+	</select>
+	<!--获取网评员表的条数，方便产生随机数-->
+	<select id="getCountByNc" resultType="Integer">
+		select count(*) from wp_userinfo_nc
+	</select>
+	<!--新增团队成员-->
+	<insert id="addWpTeamMembers" parameterType="com.jeesite.modules.wp.entity.WpTeamUser">
+		insert into WP_TEAM_MEMBERS
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="wpTeamMembersId != null and wpTeamMembersId != '' ">
+				WP_TEAM_MEMBERS_ID,
+			</if>
+			<if test="wpTeamId != null and wpTeamId != '' ">
+				WP_TEAM_ID,
+			</if>
+			<if test="userCode != null and userCode != '' ">
+				USER_CODE,
+			</if>
+			<if test="remarks != null and remarks != '' ">
+				REMARKS,
+			</if>
+			<if test="createBy != null and createBy != '' ">
+				CREATE_BY,
+			</if>
+			<if test="createDate != null  ">
+				CREATE_DATE,
+			</if>
+			<if test="updateBy != null and updateBy != '' ">
+				UPDATE_BY,
+			</if>
+			<if test="updateDate != null  ">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="wpTeamMembersId != null and wpTeamMembersId != '' ">
+				#{wpTeamMembersId},
+			</if>
+			<if test="wpTeamId != null and wpTeamId != '' ">
+				#{wpTeamId},
+			</if>
+			<if test="userCode != null and userCode != '' ">
+				#{userCode},
+			</if>
+			<if test="remarks != null and remarks != '' ">
+				#{remarks},
+			</if>
+			<if test="createBy != null and createBy != '' ">
+				#{createBy},
+			</if>
+			<if test="createDate != null ">
+				#{createDate},
+			</if>
+			<if test="updateBy != null and updateBy != '' ">
+				#{updateBy},
+			</if>
+			<if test="updateDate != null  ">
+				#{updateDate},
+			</if>
+		</trim>
+	</insert>
+	<!--删掉团队成员信息-->
+	<delete id="delMembers" parameterType="java.lang.String">
+		delete from WP_TEAM_MEMBERS where WP_TEAM_ID = #{wpTeamId}
+	</delete>
+</mapper>

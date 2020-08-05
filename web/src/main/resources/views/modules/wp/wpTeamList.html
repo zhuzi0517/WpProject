@@ -1,0 +1,115 @@
+<% layout('/layouts/default.html', {title: '任务团队管理管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa icon-notebook"></i> ${text('任务团队管理管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<% if(hasPermi('wp:wpTeam:edit')){ %>
+					<a href="${ctx}/wp/wpTeam/form" class="btn btn-default btnTool" title="${text('新增任务团队管理')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% } %>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${wpTeam}" action="${ctx}/wp/wpTeam/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('团队名称')}：</label>
+					<div class="control-inline">
+						<#form:input path="teamName" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('所属区域')}：</label>
+					<div class="control-inline width-120">
+<!--						<#form:select path="areaCode" dictType="" blankOption="true" class="form-control"/>-->
+						<#form:treeselect id="area" title="${text('区域选择')}"
+						path="area.areaCode" labelName="area.areaName" labelValue="${company.area.treeNames!}"
+						url="${ctx}/sys/area/treeData" returnFullName="true"
+						class=" " allowClear="true"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('团队有效期开始时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="beginTime" readonly="true" maxlength="20" class="form-control laydate width-datetime"
+							dataFormat="datetime" data-type="datetime" data-format="yyyy-MM-dd HH:mm"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('团队有效期结束时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="endTime" readonly="true" maxlength="20" class="form-control laydate width-datetime"
+							dataFormat="datetime" data-type="datetime" data-format="yyyy-MM-dd HH:mm"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('团队标签')}：</label>
+					<div class="control-inline">
+						<#form:input path="teamLabel" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('状态')}：</label>
+					<div class="control-inline">
+						<#form:input path="teamStatus" maxlength="1" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("主键ID")}', name:'wpTeamId', index:'a.wp_team_id', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/wp/wpTeam/form?wpTeamId='+row.wpTeamId+'" class="btnList" data-title="${text("编辑任务团队管理")}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text("团队名称")}', name:'teamName', index:'a.team_name', width:150, align:"left"},
+		{header:'${text("团队编号")}', name:'teamNo', index:'a.team_no', width:150, align:"left"},
+		{header:'${text("所属区域名称")}', name:'areaName', index:'a.area_name', width:150, align:"left"},
+		{header:'${text("所属区域")}', name:'areaCode', index:'a.area_code', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("团队有效期开始时间")}', name:'beginTime', index:'a.begin_time', width:150, align:"center"},
+		{header:'${text("团队有效期结束时间")}', name:'endTime', index:'a.end_time', width:150, align:"center"},
+		{header:'${text("团队标签")}', name:'teamLabel', index:'a.team_label', width:150, align:"left"},
+		{header:'${text("状态")}', name:'teamStatus', index:'a.team_status', width:150, align:"left",formatter: function(val, obj, row, act){
+				if (val == '1') {
+					return '启用';
+				} else if(val == '0') {
+					return '禁用';
+				}else {
+					return '';
+				}
+			}
+		},
+		{header:'${text("成员数量")}', name:'memberNumber', index:'a.member_number', width:150, align:"center"},
+		{header:'${text("备注")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
+		{header:'${text("创建人")}', name:'createBy', index:'a.create_by', width:150, align:"left"},
+		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('wp:wpTeam:edit')){ %>
+				actions.push('<a href="${ctx}/wp/wpTeam/form?wpTeamId='+row.wpTeamId+'" class="btnList" title="${text("编辑任务团队管理")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/wp/wpTeam/delete?wpTeamId='+row.wpTeamId+'" class="btnList" title="${text("删除任务团队管理")}" data-confirm="${text("确认要删除该任务团队管理吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>

@@ -146,6 +146,97 @@
 						</div>
 					</div>
 				</div>
+				<div class="form-unit">${text('执行记录')}</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2" title="">
+								<span class="required hide">*</span> ${text('执行操作')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-10" style="float: left">
+								<table id="tab1" style="float: left">
+									<#form:checkbox  path="remarks" label="点赞" class="form-control"/>
+									<#form:checkbox  path="remarks" label="评论" class="form-control"/>
+									<#form:checkbox  path="remarks" label="分享" class="form-control"/>
+								</table>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<table id="tab2" style="float: right">
+									<#form:checkbox  path="remarks" label="ＱＱ" class="form-control"/>
+									<#form:checkbox  path="remarks" label="微信" class="form-control"/>
+									<#form:checkbox  path="remarks" label="微博" class="form-control"/>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2">
+								<span class="required hide">*</span> ${text('操作记录上传')}：</label>
+							<div class="col-sm-10">
+								<#form:fileupload id="uploadImage" bizKey="${wpTask.id}" bizType="wpTask_image"
+								uploadType="image" class="" readonly="false" preview="true"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('操作记录数')}：<i
+									class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="taskDescription" maxlength="64" class="form-control"/>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('任务状态')}：<i
+									class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<button type="button" class="btn btn-sm btn-default" id="btnCancel1" >${text('未开始')}</button>
+								<button type="button" class="btn btn-sm btn-default" id="btnCancel2" > ${text('进行中')}</button>
+								<button type="button" class="btn btn-sm btn-default" id="btnCancel3" > ${text('已完成')}</button>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('完成时间')}：<i
+									class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="beginTime" readonly="true" maxlength="20" class="form-control laydate"
+								dataFormat="datetime" data-type="datetime" data-format="yyyy-MM-dd HH:mm"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('任务执行人')}：<i
+									class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="taskDescription" maxlength="64" class="form-control"/>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
 			</div>
 			<div class="box-footer">
 				<div class="row">

@@ -4,8 +4,10 @@
 package com.jeesite.modules.wp.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import com.google.common.collect.Maps;
 import com.jeesite.modules.wp.entity.WpTaskSub;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,9 @@ import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.wp.entity.WpTask;
 import com.jeesite.modules.wp.dao.WpTaskDao;
 import com.jeesite.modules.file.utils.FileUploadUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 任务信息管理Service
@@ -92,5 +97,17 @@ public class WpTaskService extends CrudService<WpTaskDao, WpTask> {
 	public void delete(WpTask wpTask) {
 		super.delete(wpTask);
 	}
-	
+
+	/**
+	 * 任务执行信息列表sql
+	 * @param wpTask
+	 * @return
+	 */
+	public Page<WpTask> getTaskExecuteList(WpTask wpTask){
+		Page<WpTask> page = new Page<WpTask>();
+		wpTask.setPage(page);
+		List<WpTask> list = dao.getTaskExecuteList(wpTask);
+		page.setList(list);
+		return page;
+	}
 }

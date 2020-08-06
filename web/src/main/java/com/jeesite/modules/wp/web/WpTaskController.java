@@ -54,10 +54,41 @@ public class WpTaskController extends BaseController {
 		model.addAttribute("wpTask", wpTask);
 		return "modules/wp/wpTaskList";
 	}
-	
+
 	/**
-	 * 查询列表数据
+	 * 返回到任务执行页面
+	 * @param wpTask
+	 * @param model
+	 * @return
 	 */
+	@RequiresPermissions("wp:wpTask:view")
+	@RequestMapping(value = {"taskExecuteList", ""})
+	public String taskExecuteList(WpTask wpTask, Model model) {
+		model.addAttribute("wpTask", wpTask);
+		return "modules/wp/wpTaskExecuteList";
+	}
+
+	/**
+	 * 任务执行列表sql
+	 * @param wpTask
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequiresPermissions("wp:wpTask:view")
+	@RequestMapping(value = "getTaskExecuteList")
+	@ResponseBody
+	public Page<WpTask> getTaskExecuteList(WpTask wpTask, HttpServletRequest request, HttpServletResponse response) {
+//		wpTask.setPage(new Page<WpTask>(request, response));
+		Page<WpTask> list = wpTaskService.getTaskExecuteList(wpTask);
+
+		return list;
+	}
+
+
+		/**
+         * 查询列表数据
+         */
 	@RequiresPermissions("wp:wpTask:view")
 	@RequestMapping(value = "listData")
 	@ResponseBody

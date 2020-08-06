@@ -55,6 +55,16 @@ public class WpTask extends DataEntity<WpTask> {
 	private String teamName;
 	private List<WpTaskSub> wpTaskSubList;
 
+	private WpTaskRecord wpTaskRecord;
+
+	public WpTaskRecord getWpTaskRecord() {
+		return wpTaskRecord;
+	}
+
+	public void setWpTaskRecord(WpTaskRecord wpTaskRecord) {
+		this.wpTaskRecord = wpTaskRecord;
+	}
+
 	public String getTeamName() {
 		return teamName;
 	}

@@ -9,6 +9,7 @@ import com.jeesite.modules.wp.entity.WpTask;
 import com.jeesite.modules.wp.entity.WpTaskSub;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 任务信息管理DAO接口
@@ -20,4 +21,5 @@ public interface WpTaskDao extends CrudDao<WpTask> {
 	List<WpTaskSub> getTeamList();
 	void addWpTaskSub(WpTaskSub wpTaskSub);
 	void delWpTaskSub(String wpTaskId);
+	List<WpTask> getTaskExecuteList(WpTask wpTask);
 }

@@ -76,7 +76,7 @@
 		</trim>
 	</insert>
 	<!--修改团队任务子表-->
-	<update id="updateWpTaskSub" parameterType="com.jeesite.modules.wp.entity.WpTask">
+	<update id="updateWpTaskSub" parameterType="com.jeesite.modules.wp.entity.WpTaskSub">
 		update wp_task_sub
 		<set>
 			<if test="wpTaskId != null">
@@ -97,4 +97,18 @@
 		</set>
 		where WP_TASK_SUB_ID = #{wpTaskSubId,jdbcType=VARCHAR}
 	</update>
+	<!--任务执行管理页面列表sql-->
+	<select id="getTaskExecuteList" resultType="com.jeesite.modules.wp.entity.WpTask" parameterType="com.jeesite.modules.wp.entity.WpTask">
+		SELECT
+			'area_code',
+			T1.TASK_NO,
+			T1.TASK_NAME,
+			T1.TASK_LEVEL,
+			T1.TASK_CATEGORY,
+			T2.TASK_STATUS,
+			T2.DONE_TIME
+		FROM
+			wp_task T1
+		LEFT JOIN wp_taskrecord T2 ON T1.WP_TASK_ID = T2.WP_TASK_ID
+	</select>
 </mapper>

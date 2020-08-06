@@ -6,6 +6,7 @@ package com.jeesite.modules.wp.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.wp.entity.WpTaskSub;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,12 +80,30 @@ public class WpTaskController extends BaseController {
 	@RequestMapping(value = "getTaskExecuteList")
 	@ResponseBody
 	public Page<WpTask> getTaskExecuteList(WpTask wpTask, HttpServletRequest request, HttpServletResponse response) {
-//		wpTask.setPage(new Page<WpTask>(request, response));
 		Page<WpTask> list = wpTaskService.getTaskExecuteList(wpTask);
 
 		return list;
 	}
 
+	/**
+	 * 查看任务执行编辑页面
+	 * @param wpTaskId
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions("wp:wpTask:view")
+	@RequestMapping(value = "getTaskListById")
+	public String getTaskListById(WpTask wpTask,Model model){
+		if (StringUtils.isBlank(wpTask.getWpTaskId())){
+			wpTask.setIsNewRecord(true);
+		}else {
+			wpTask = wpTaskService.getTaskListById(wpTask.getWpTaskId());
+		}
+		model.addAttribute("wpTask",wpTask);
+		List<WpTaskSub> WpTaskSubList = wpTaskService.getTeamList();
+		model.addAttribute("WpTaskSubList",WpTaskSubList);
+		return "modules/wp/wpTaskExecuteForm";
+	}
 
 		/**
          * 查询列表数据

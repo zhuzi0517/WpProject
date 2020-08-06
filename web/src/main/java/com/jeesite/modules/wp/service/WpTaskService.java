@@ -110,4 +110,13 @@ public class WpTaskService extends CrudService<WpTaskDao, WpTask> {
 		page.setList(list);
 		return page;
 	}
+
+	/**
+	 * 查询任务执行form
+	 * @param wpTaskId
+	 * @return
+	 */
+	public 	WpTask getTaskListById(String wpTaskId){
+		return dao.getTaskListById(wpTaskId);
+	}
 }

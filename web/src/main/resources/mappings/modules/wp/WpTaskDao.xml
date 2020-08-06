@@ -100,6 +100,7 @@
 	<!--任务执行管理页面列表sql-->
 	<select id="getTaskExecuteList" resultType="com.jeesite.modules.wp.entity.WpTask" parameterType="com.jeesite.modules.wp.entity.WpTask">
 		SELECT
+			T1.WP_TASK_ID,
 			'area_code',
 			T1.TASK_NO,
 			T1.TASK_NAME,
@@ -110,5 +111,21 @@
 		FROM
 			wp_task T1
 		LEFT JOIN wp_taskrecord T2 ON T1.WP_TASK_ID = T2.WP_TASK_ID
+	</select>
+	<!--任务执行管理页面根据任务ID查询-->
+	<select id="getTaskListById" resultType="com.jeesite.modules.wp.entity.WpTask" parameterType="java.lang.String">
+			SELECT
+				T1.WP_TASK_ID,
+				'area_code',
+				T1.TASK_NO,
+				T1.TASK_NAME,
+				T1.TASK_LEVEL,
+				T1.TASK_CATEGORY,
+				T2.TASK_STATUS,
+				T2.DONE_TIME
+			FROM
+				wp_task T1
+			LEFT JOIN wp_taskrecord T2 ON T1.WP_TASK_ID = T2.WP_TASK_ID
+			WHERE T1.WP_TASK_ID = #{wpTaskId}
 	</select>
 </mapper>

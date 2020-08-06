@@ -22,4 +22,5 @@ public interface WpTaskDao extends CrudDao<WpTask> {
 	void addWpTaskSub(WpTaskSub wpTaskSub);
 	void delWpTaskSub(String wpTaskId);
 	List<WpTask> getTaskExecuteList(WpTask wpTask);
+	WpTask getTaskListById(String wpTaskId);
 }
